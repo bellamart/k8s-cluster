@@ -1,0 +1,10 @@
+resources:
+  - cert-manager.yaml
+  - metallb.yaml
+  - ingress-nginx.yaml
+  - cnpg.yaml
+  - longhorn.yaml
+  - pihole.yaml
+  - external-dns.yaml
+  - nextcloud.yaml
+  - docker-registry.yaml
