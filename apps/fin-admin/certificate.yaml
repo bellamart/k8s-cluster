@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: chrobacik-cloud-cert
+  namespace: fin-admin
+spec:
+  secretName: chrobacik-cloud-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - finadmin.chrobacik.cloud
+    - api.finadmin.chrobacik.cloud

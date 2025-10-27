@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fin-admin-app
+  namespace: fin-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fin-admin-app
+  template:
+    metadata:
+      labels:
+        app: fin-admin-app
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      volumes:
+        - name: fin-admin-config-volume
+          secret:
+            secretName: fin-admin-config
+      containers:
+        - name: fin-admin-backend
+          image: ghcr.io/bellamart/fin-admin/backend:c114042f8178816531930865a5d6e97385cfe0cc
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: fin-admin-config-volume
+              mountPath: /app/config
+              readOnly: true
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+        - name: fin-admin-frontend
+          image: ghcr.io/bellamart/fin-admin/frontend:c114042f8178816531930865a5d6e97385cfe0cc
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fin-admin-app
+  namespace: fin-admin
+spec:
+  selector:
+    app: fin-admin-app
+  ports:
+    - name: gui
+      port: 80
+      targetPort: 80
+    - name: api
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fin-admin-ingress
+  namespace: fin-admin
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: finadmin.chrobacik.cloud
+      http:
+        paths:
+          - backend:
+              service:
+                name: fin-admin-app
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - finadmin.chrobacik.cloud
+      secretName: chrobacik-cloud-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fin-admin-api-ingress
+  namespace: fin-admin
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: api.finadmin.chrobacik.cloud
+      http:
+        paths:
+          - backend:
+              service:
+                name: fin-admin-app
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - api.finadmin.chrobacik.cloud
+      secretName: chrobacik-cloud-tls
