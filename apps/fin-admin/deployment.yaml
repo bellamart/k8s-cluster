@@ -21,7 +21,7 @@ spec:
             secretName: fin-admin-config
       containers:
         - name: fin-admin-backend
-          image: ghcr.io/bellamart/fin-admin/backend:c114042f8178816531930865a5d6e97385cfe0cc
+          image: ghcr.io/bellamart/fin-admin/backend:ef5659ed1db9fcea9405b2007a3ca3ab3dcf7b36
           ports:
             - containerPort: 8080
           volumeMounts:
@@ -36,7 +36,7 @@ spec:
               memory: "128Mi"
               cpu: "100m"
         - name: fin-admin-frontend
-          image: ghcr.io/bellamart/fin-admin/frontend:c114042f8178816531930865a5d6e97385cfe0cc
+          image: ghcr.io/bellamart/fin-admin/frontend:ef5659ed1db9fcea9405b2007a3ca3ab3dcf7b36
           ports:
             - containerPort: 80
           resources:
