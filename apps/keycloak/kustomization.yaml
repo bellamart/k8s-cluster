@@ -1,0 +1,7 @@
+resources:
+  - certificate.yaml
+  - db-cluster.yaml
+  - keycloak-crd.yaml
+  - keycloakrealmimport-crd.yaml
+  - operator.yaml
+  - keycloak.yaml

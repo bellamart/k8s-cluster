@@ -9,3 +9,4 @@ resources:
   - nextcloud.yaml
   - docker-registry.yaml
   - fin-admin.yaml
+  - keycloak.yaml

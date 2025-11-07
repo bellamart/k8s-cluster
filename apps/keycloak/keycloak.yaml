@@ -1,0 +1,24 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+spec:
+  instances: 1
+  db:
+    vendor: postgres
+    host: keycloak-db-cluster-rw
+    port: 5432
+    database: keycloak
+    schema: keycloak
+    usernameSecret:
+      name: db-cluster-secret
+      key: username
+    passwordSecret:
+      name: db-cluster-secret
+      key: password
+  http:
+    tlsSecret: chrobacik-cloud-tls
+  ingress:
+    className: nginx
+  hostname:
+    hostname: keycloak.chrobacik.cloud

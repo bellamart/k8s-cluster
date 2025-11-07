@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/basic-auth
+metadata:
+  name: db-cluster-secret
+stringData:
+  username: keycloak
+  password: my-strong-password
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: keycloak-db-cluster
+  namespace: keycloak
+spec:
+  instances: 1
+  bootstrap:
+    initdb:
+      database: keycloak
+      owner: keycloak
+      secret:
+        name: db-cluster-secret
+      postInitApplicationSQL:
+        - create schema keycloak
+        - grant all privileges on schema keycloak to keycloak
+  storage:
+    size: 1Gi
+    storageClass: longhorn
