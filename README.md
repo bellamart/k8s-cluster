@@ -14,6 +14,7 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 - Nextcloud for personal cloud storage
 - Docker Registry for private container image storage
 - Keycloak for identity and access management
+- N8N for workflow automation
 - FinAdmin for personal finance management
 
 ## ArgoCD

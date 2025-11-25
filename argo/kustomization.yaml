@@ -10,3 +10,4 @@ resources:
   - docker-registry.yaml
   - fin-admin.yaml
   - keycloak.yaml
+  - n8n.yaml
