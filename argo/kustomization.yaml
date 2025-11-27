@@ -10,3 +10,4 @@ resources:
   - n8n.yaml
   - tools.yaml
   - monitoring.yaml
+  - wanderer.yaml

@@ -1,0 +1,201 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wanderer-secrets
+  namespace: wanderer
+type: Opaque
+data:
+  MEILI_MASTER_KEY: "T2lsMTVBYlM1ZFVQbEs5VXBvNDRrUmYxN294djJIUTU="
+  POCKETBASE_ENCRYPTION_KEY: "ZjVmY2NkZDA5MDg0ZDgyOGY2ZTQ3NzgwMzY3YjYzYzI="
+  UPLOAD_USER: "dXBsb2FkZXI="
+  UPLOAD_PASSWORD: "a1lvNkpNSTJyNWxpCg=="
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wanderer-db
+  namespace: wanderer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wanderer-db
+  template:
+    metadata:
+      labels:
+        app: wanderer-db
+    spec:
+      containers:
+      - name: db
+        image: flomp/wanderer-db:v0.18.3
+        env:
+        - name: MEILI_URL
+          value: "https://wanderer-meilisearch.chrobacik.cloud"
+        - name: MEILI_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wanderer-secrets
+              key: MEILI_MASTER_KEY
+        - name: POCKETBASE_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wanderer-secrets
+              key: POCKETBASE_ENCRYPTION_KEY
+        - name: ORIGIN
+          value: "https://wanderer.chrobacik.cloud"
+        - name: POCKETBASE_CRON_SYNC_SCHEDULE
+          value: "*/5 * * * *"
+        ports:
+        - containerPort: 8090
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 100m
+            memory: 512Mi
+        volumeMounts:
+        - name: pb-data
+          mountPath: /pb_data
+        livenessProbe:
+          exec:
+            command:
+            - wget
+            - --spider
+            - -q
+            - http://db:8090/health
+          initialDelaySeconds: 20
+          periodSeconds: 15
+          timeoutSeconds: 10
+          failureThreshold: 10
+      volumes:
+      - name: pb-data
+        persistentVolumeClaim:
+          claimName: wanderer-db-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: wanderer
+spec:
+  selector:
+    app: wanderer-db
+  ports:
+  - port: 8090
+    targetPort: 8090
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wanderer-web
+  namespace: wanderer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wanderer-web
+  template:
+    metadata:
+      labels:
+        app: wanderer-web
+    spec:
+      containers:
+      - name: web
+        image: flomp/wanderer-web:v0.18.3
+        env:
+        - name: MEILI_URL
+          value: "https://wanderer-meilisearch.chrobacik.cloud"
+        - name: MEILI_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wanderer-secrets
+              key: MEILI_MASTER_KEY
+        - name: ORIGIN
+          value: "https://wanderer.chrobacik.cloud"
+        - name: BODY_SIZE_LIMIT
+          value: "Infinity"
+        - name: PUBLIC_POCKETBASE_URL
+          value: "http://db:8090"
+        - name: PUBLIC_DISABLE_SIGNUP
+          value: "false"
+        - name: UPLOAD_FOLDER
+          value: "/app/uploads"
+        - name: UPLOAD_USER
+          valueFrom:
+            secretKeyRef:
+              name: wanderer-secrets
+              key: UPLOAD_USER
+        - name: UPLOAD_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wanderer-secrets
+              key: UPLOAD_PASSWORD
+        - name: PUBLIC_OVERPASS_API_URL
+          value: "https://overpass-api.de"
+        - name: PUBLIC_VALHALLA_URL
+          value: "https://valhalla1.openstreetmap.de"
+        - name: PUBLIC_NOMINATIM_URL
+          value: "https://nominatim.openstreetmap.org"
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 100m
+            memory: 512Mi
+        volumeMounts:
+        - name: uploads
+          mountPath: /app/uploads
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 15
+          timeoutSeconds: 10
+          failureThreshold: 10
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: wanderer-web-uploads
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: wanderer
+spec:
+  selector:
+    app: wanderer-web
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wanderer-web
+  namespace: wanderer
+#  annotations:
+#    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: wanderer.chrobacik.cloud
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 3000
+  tls:
+    - hosts:
+        - wanderer.chrobacik.cloud
+      secretName: chrobacik-cloud-tls

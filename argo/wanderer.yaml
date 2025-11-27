@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wanderer
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: wanderer
+  source:
+    repoURL: git@github.com:bellamart/k8s-cluster.git
+    targetRevision: feature/wanderer
+    path: argo/wanderer
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m0s
+      limit: 2

@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wanderer-helm
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: wanderer
+  source:
+    repoURL: https://meilisearch.github.io/meilisearch-kubernetes
+    chart: meilisearch
+    targetRevision: 0.17.2
+    helm:
+      values: |
+        ingress:
+          enabled: true
+          hosts:
+            - wanderer-meilisearch.chrobacik.cloud
+          tls:
+            - secretName: chrobacik-cloud-tls
+              hosts:
+                - wanderer-meilisearch.chrobacik.cloud
+        auth:
+          existingMasterKeySecret: wanderer-secrets
+
+        persistence:
+          enabled: true
+          existingClaim: wanderer-search-data
+
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m0s
+      limit: 2
