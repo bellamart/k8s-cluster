@@ -11,3 +11,4 @@ resources:
   - fin-admin.yaml
   - keycloak.yaml
   - n8n.yaml
+  - tools.yaml
