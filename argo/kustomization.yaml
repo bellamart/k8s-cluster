@@ -6,7 +6,6 @@ resources:
   - pihole.yaml
   - external-dns.yaml
   - nextcloud.yaml
-  - docker-registry.yaml
   - fin-admin.yaml
   - keycloak.yaml
   - n8n.yaml
