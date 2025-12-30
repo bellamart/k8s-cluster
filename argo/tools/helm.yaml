@@ -16,7 +16,7 @@ spec:
       values: |
         ingress:
           enabled: true
-          className: nginx
+          className: traefik
           hosts:
             - host: tools.chrobacik.cloud
               paths:

@@ -6,7 +6,6 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 
 - Cert Manager for managing TLS certificates
 - MetalLB for LoadBalancer support
-- Ingress-Nginx for Ingress support
 - CNPG for PostgreSQL databases
 - Longhorn for distributed block storage
 - PiHole for network-wide ad blocking
@@ -17,6 +16,20 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 - N8N for workflow automation
 - IT Tools for various IT utilities
 - FinAdmin for personal finance management
+
+## K3S installation
+
+First node:
+
+```bash
+curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode "0644" --token pdZKhWJaqtqB --cluster-init --disable servicelb --disable traefik --disable local-storage
+```
+
+Other nodes:
+
+```bash
+curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode "0644" --token pdZKhWJaqtqB --cluster-init --disable servicelb --disable traefik --disable local-storage --server https://$FIRST_NODE_NAME:6443
+```
 
 ## ArgoCD
 

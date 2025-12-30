@@ -22,15 +22,10 @@ spec:
 
         ingress:
           enabled: true
-          ingressClassName: nginx
+          ingressClassName: traefik
           host: longhorn.chrobacik.cloud
           tls: true
           tlsSecret: chrobacik-cloud-tls
-          # annotations:
-          #   nginx.ingress.kubernetes.io/auth-type: basic
-          #   nginx.ingress.kubernetes.io/ssl-redirect: 'false'
-          #   nginx.ingress.kubernetes.io/auth-secret: basic-auth
-          #   nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
   syncPolicy:
     automated:
       enabled: true

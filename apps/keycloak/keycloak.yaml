@@ -19,6 +19,6 @@ spec:
   http:
     tlsSecret: chrobacik-cloud-tls
   ingress:
-    className: nginx
+    className: traefik
   hostname:
     hostname: keycloak.chrobacik.cloud

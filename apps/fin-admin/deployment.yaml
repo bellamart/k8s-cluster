@@ -70,7 +70,7 @@ metadata:
   name: fin-admin-ingress
   namespace: fin-admin
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
     - host: finadmin.chrobacik.cloud
       http:
@@ -93,7 +93,7 @@ metadata:
   name: fin-admin-api-ingress
   namespace: fin-admin
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
     - host: api.finadmin.chrobacik.cloud
       http:

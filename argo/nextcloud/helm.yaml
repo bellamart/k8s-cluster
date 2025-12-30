@@ -39,16 +39,16 @@ spec:
 
         ingress:
           enabled: true
-          className: nginx
+          className: traefik
           hosts:
             - host: nextcloud.chrobacik.cloud
           tls:
             - secretName: chrobacik-cloud-tls
               hosts:
                 - nextcloud.chrobacik.cloud
-          annotations:
-            nginx.ingress.kubernetes.io/affinity: cookie
-            nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          # annotations:
+          #   nginx.ingress.kubernetes.io/affinity: cookie
+          #   nginx.ingress.kubernetes.io/proxy-body-size: 4G
 
         internalDatabase:
           enabled: false
