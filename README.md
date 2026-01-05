@@ -14,6 +14,7 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 - Keycloak for identity and access management
 - N8N for workflow automation
 - IT Tools for various IT utilities
+- Prometheus/Grafana for monitoring and alerting
 - FinAdmin for personal finance management
 
 ## K3S installation
@@ -21,13 +22,13 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 First node:
 
 ```bash
-curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode "0644" --token pdZKhWJaqtqB --cluster-init --disable servicelb --disable traefik --disable local-storage
+curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode "0644" --token pdZKhWJaqtqB --cluster-init --disable servicelb --disable local-storage
 ```
 
 Other nodes:
 
 ```bash
-curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode "0644" --token pdZKhWJaqtqB --cluster-init --disable servicelb --disable traefik --disable local-storage --server https://$FIRST_NODE_NAME:6443
+curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode "0644" --token pdZKhWJaqtqB --cluster-init --disable servicelb --disable local-storage --server https://$FIRST_NODE_NAME:6443
 ```
 
 ## ArgoCD

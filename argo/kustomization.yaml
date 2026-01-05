@@ -10,3 +10,4 @@ resources:
   - keycloak.yaml
   - n8n.yaml
   - tools.yaml
+  - monitoring.yaml
