@@ -9,5 +9,4 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
-    - chrobacik.cloud
-    - "*.chrobacik.cloud"
+    - nextcloud.chrobacik.cloud
