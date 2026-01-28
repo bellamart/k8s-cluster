@@ -5,6 +5,32 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |-
+    api:
+      dashboard: true
+      insecure: true
+    ingressRoute:
+      dashboard:
+        enabled: true
+        entryPoints:
+          - websecure
+    ports:
+      web:
+        redirections:
+          entryPoint:
+            to: websecure
+            scheme: https
+            permanent: true
+      websecure:
+        http3:
+          enabled: true
+          advertisedPort: 443
+        tls:
+          enabled: true
+    tlsOptions:
+      default:
+        minVersion: VersionTLS12
+        # HTTP/3 requires TLS 1.3, which is enabled by default in Traefik when HTTP/3 is on.
+        # But having a clean default config helps.
     metrics:
       prometheus:
         enabled: true
