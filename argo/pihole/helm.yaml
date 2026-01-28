@@ -14,8 +14,8 @@ spec:
     targetRevision: 2.34.0
     helm:
       values: |
-        DNS1: 192.168.1.1
-        DNS2: 192.168.1.1
+        DNS1: 8.8.8.8
+        DNS2: 1.1.1.1
 
         persistentVolumeClaim:
           enabled: true
