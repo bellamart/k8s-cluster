@@ -5,6 +5,24 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |-
+    providers:
+      kubernetesGateway:
+        enabled: true
+    gateway:
+      enabled: true
+      listeners:
+        web:
+          namespacePolicy:
+            from: All
+        websecure:
+          port: 8443
+          protocol: HTTPS
+          namespacePolicy:
+            from: All
+          certificateRefs:
+            - name: chrobacik-cloud-tls
+              namespace: kube-system
+          mode: Terminate
     api:
       dashboard: true
       insecure: true
