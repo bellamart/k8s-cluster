@@ -1,0 +1,5 @@
+resources:
+  - deployment.yaml
+  - httproute.yaml
+  - test-issuer.yaml
+  - certificate.yaml

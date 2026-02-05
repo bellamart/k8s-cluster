@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-pod-index
+  namespace: test
+data:
+  index.html: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <title>Hello from test-pod</title>
+    </head>
+    <body>
+      <h1>Hello, world!</h1>
+      <p>This is a simple NGINX page served from the test-pod Deployment.</p>
+    </body>
+    </html>
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-pod
+  labels:
+    app: test-pod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-pod
+  template:
+    metadata:
+      labels:
+        app: test-pod
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:stable-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: www
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: www
+          configMap:
+            name: test-pod-index
+            items:
+              - key: index.html
+                path: index.html
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-pod-svc
+  labels:
+    app: test-pod
+spec:
+  type: ClusterIP
+  selector:
+    app: test-pod
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
