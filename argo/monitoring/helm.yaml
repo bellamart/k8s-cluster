@@ -41,7 +41,7 @@ spec:
                   - prometheus.chrobacik.cloud
           prometheusSpec:
             retention: 7d
-            retentionSize: "10GiB"
+            retentionSize: "20GiB"
             storageSpec:
               volumeClaimTemplate:
                 spec:
@@ -49,7 +49,7 @@ spec:
                   accessModes: ["ReadWriteMany"]
                   resources:
                     requests:
-                      storage: 10Gi
+                      storage: 20Gi
 
         alertmanager:
           ingress:
