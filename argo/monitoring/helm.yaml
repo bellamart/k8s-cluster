@@ -41,7 +41,7 @@ spec:
                   - prometheus.chrobacik.cloud
           prometheusSpec:
             retention: 7d
-            retentionSize: "20GiB"
+            retentionSize: "15GiB"
             storageSpec:
               volumeClaimTemplate:
                 spec:
