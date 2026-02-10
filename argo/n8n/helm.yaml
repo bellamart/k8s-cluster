@@ -11,9 +11,11 @@ spec:
   source:
     repoURL: https://community-charts.github.io/helm-charts
     chart: n8n
-    targetRevision: 1.16.4
+    targetRevision: 1.16.28
     helm:
       values: |
+        existingEncryptionKeySecret: n8n-encryption-key-secret
+
         log:
           level: warn
         
