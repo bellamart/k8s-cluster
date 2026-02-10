@@ -50,6 +50,7 @@ spec:
                   resources:
                     requests:
                       storage: 25Gi
+            enableOTLPReceiver: true
 
         alertmanager:
           ingress:
