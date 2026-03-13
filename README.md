@@ -15,6 +15,7 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 - N8N for workflow automation
 - IT Tools for various IT utilities
 - Prometheus/Grafana for monitoring and alerting
+- Redis for caching
 - FinAdmin for personal finance management
 
 ## K3S installation
