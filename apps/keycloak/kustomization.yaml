@@ -1,7 +1,7 @@
 resources:
   - certificate.yaml
   - db-cluster.yaml
-  - keycloak-crd.yaml
-  - keycloakrealmimport-crd.yaml
-  - operator.yaml
+  - keycloak-crd-26.5.6.yaml
+  - keycloakrealmimport-crd-26.5.6.yaml
+  - operator-26.5.6.yaml
   - keycloak.yaml

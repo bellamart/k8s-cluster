@@ -17,8 +17,12 @@ spec:
       name: db-cluster-secret
       key: password
   http:
-    tlsSecret: chrobacik-cloud-tls
+    httpEnabled: true
+    httpsPort: 443
   ingress:
     className: traefik
+    tlsSecret: chrobacik-cloud-tls
   hostname:
     hostname: keycloak.chrobacik.cloud
+  proxy:
+    headers: xforwarded
