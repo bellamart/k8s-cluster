@@ -4,7 +4,6 @@ resources:
   - cnpg.yaml
   - longhorn.yaml
   - pihole.yaml
-  - external-dns.yaml
   - nextcloud.yaml
   - fin-admin.yaml
   - keycloak.yaml
