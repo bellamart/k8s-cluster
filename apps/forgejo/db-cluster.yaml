@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/basic-auth
+metadata:
+  name: db-cluster-secret
+stringData:
+  username: forgejo
+  password: my-strong-password
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: forgejo-db-cluster
+  namespace: forgejo
+spec:
+  instances: 1
+  bootstrap:
+    initdb:
+      database: forgejo
+      owner: forgejo
+      secret:
+        name: db-cluster-secret
+  storage:
+    size: 5Gi
+    storageClass: longhorn

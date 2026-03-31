@@ -16,6 +16,7 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 - IT Tools for various IT utilities
 - Prometheus/Grafana for monitoring and alerting
 - Redis for caching
+- Forgejo for code hosting
 - FinAdmin for personal finance management
 
 ## K3S installation
@@ -45,7 +46,6 @@ Create a namespace for FinAdmin:
 ```bash
 kubectl create namespace fin-admin
 ```
-
 Create a GitHub Personal Access Token (PAT) with `read:packages` scope and add it as a Kubernetes secret in the `fin-admin` namespace:
 
 ```bash
@@ -59,7 +59,18 @@ kubectl create secret docker-registry ghcr-secret \
 Create a configuration file named `application.yaml` with the necessary settings for Fin-Admin. Then, create a Kubernetes secret from this configuration file:
 
 ```bash
-kubectl create secret generic fin-admin-config \
+kubectl create secret generic forgejo-admin-secret \
+  --from-literal=username=<USERNAME> \
+  --from-literal=password=<PASSWORD> \
+  -n forgejo
+```
+
+## Forgejo
+
+Create a secret to configure the admin user:
+
+```bash
+kubectl create secret generic forgejo-admin-secret \
   --from-file=application.yaml=application.yaml \
   -n fin-admin
 ```

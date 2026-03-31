@@ -11,3 +11,4 @@ resources:
   - tools.yaml
   - monitoring.yaml
   - redis.yaml
+  - forgejo.yaml
