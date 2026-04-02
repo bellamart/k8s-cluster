@@ -9,9 +9,25 @@ spec:
     server: https://kubernetes.default.svc
     namespace: redis
   source:
-    repoURL: git@github.com:bellamart/k8s-cluster.git
-    targetRevision: main
-    path: argo/redis
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: redis
+    targetRevision: 25.3.2
+    helm:
+      values: |
+        auth:
+          enabled: false
+          sentinel: false
+        master:
+          persistence:
+            enabled: true
+            storageClass: longhorn
+            accessModes:
+              - ReadWriteMany
+            size: 8Gi
+        metrics:
+          enabled: true
+        replica:
+          replicaCount: 2
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

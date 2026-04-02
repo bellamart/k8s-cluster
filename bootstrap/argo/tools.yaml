@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tools
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tools
+  sources:
+    - repoURL: git@github.com:bellamart/k8s-cluster.git
+      targetRevision: main
+      path: apps/tools
+    - repoURL: https://charts.jeffresc.dev
+      chart: it-tools
+      targetRevision: 0.1.4
+      helm:
+        values: |
+          ingress:
+            enabled: true
+            className: traefik
+            hosts:
+              - host: tools.chrobacik.cloud
+                paths:
+                  - path: /
+                    pathType: Prefix
+            tls:
+              - secretName: chrobacik-cloud-tls
+                hosts:
+                  - tools.chrobacik.cloud
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m0s
+      limit: 2

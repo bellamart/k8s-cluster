@@ -1,18 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: n8n-ks
+  name: cnpg
   namespace: argocd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: n8n
+    namespace: cnpg-system
   source:
     repoURL: git@github.com:bellamart/k8s-cluster.git
     targetRevision: main
-    path: apps/n8n
+    path: infra/cnpg
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
     automated:
       enabled: true
       prune: true

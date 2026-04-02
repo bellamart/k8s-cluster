@@ -20,7 +20,8 @@ spec:
           namespacePolicy:
             from: All
           certificateRefs:
-            - name: chrobacik-cloud-tls
+            - kind: Secret
+              name: chrobacik-cloud-tls
               namespace: kube-system
           mode: Terminate
     api:

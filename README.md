@@ -37,6 +37,16 @@ curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode "0644" --token pd
 
 Check the [official documentation](https://argo-cd.readthedocs.io/en/stable/getting_started/) for more details.
 
+This repo uses an "app-of-apps" bootstrap. Apply `bootstrap/argo-root.yaml` once to let ArgoCD manage the rest of the resources in this repository.
+
+## Pi-hole adjustments
+
+Add the following as a regex deny in the domains section:
+
+```
+^.*\.domain\.com$;querytype=HTTPS
+```
+
 ## Fin-Admin App
 
 FinAdmin is designed to help me generate VAT documents for the Czech Financial Administration. To deploy the FinAdmin, follow these steps:

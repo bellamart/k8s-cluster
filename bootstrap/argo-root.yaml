@@ -1,20 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nextcloud
+  name: homelab
   namespace: argocd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: nextcloud
   source:
     repoURL: git@github.com:bellamart/k8s-cluster.git
     targetRevision: main
-    path: argo/nextcloud
+    path: bootstrap/argo
   syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
     automated:
       enabled: true
       prune: true

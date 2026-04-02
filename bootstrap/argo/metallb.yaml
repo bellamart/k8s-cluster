@@ -1,17 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager
+  name: metallb
   namespace: argocd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-  source:
-    repoURL: git@github.com:bellamart/k8s-cluster.git
-    targetRevision: main
-    path: cluster/cert
+    namespace: metallb-system
+  sources:
+    - repoURL: git@github.com:bellamart/k8s-cluster.git
+      targetRevision: main
+      path: infra/metallb
+    - repoURL: 'https://metallb.github.io/metallb'
+      chart: metallb
+      targetRevision: 0.15.2
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
     automated:
       enabled: true
       prune: true

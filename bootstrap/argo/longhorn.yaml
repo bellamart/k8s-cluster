@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  sources:
+    - repoURL: git@github.com:bellamart/k8s-cluster.git
+      targetRevision: main
+      path: infra/longhorn
+    - repoURL: https://charts.longhorn.io
+      chart: longhorn
+      targetRevision: 1.11.1
+      helm:
+        values: |
+          preUpgradeChecker:
+            jobEnabled: false
+  
+          defaultSettings:
+            defaultDataPath: /data
+  
+          ingress:
+            enabled: true
+            ingressClassName: traefik
+            host: longhorn.chrobacik.cloud
+            tls: true
+            tlsSecret: chrobacik-cloud-tls
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m0s
+      limit: 2
