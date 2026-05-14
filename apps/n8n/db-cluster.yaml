@@ -14,7 +14,7 @@ metadata:
   name: n8n-db-cluster
   namespace: n8n
 spec:
-  instances: 1
+  instances: 2
   bootstrap:
     initdb:
       database: n8n

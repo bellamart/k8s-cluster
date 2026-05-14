@@ -12,7 +12,7 @@ kind: Cluster
 metadata:
   name: nextcloud-db-cluster
 spec:
-  instances: 1
+  instances: 2
   bootstrap:
     initdb:
       database: nextcloud

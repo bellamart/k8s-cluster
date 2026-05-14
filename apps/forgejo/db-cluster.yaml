@@ -13,7 +13,7 @@ metadata:
   name: forgejo-db-cluster
   namespace: forgejo
 spec:
-  instances: 1
+  instances: 2
   bootstrap:
     initdb:
       database: forgejo
