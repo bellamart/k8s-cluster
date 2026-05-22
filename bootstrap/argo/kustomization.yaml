@@ -9,6 +9,6 @@ resources:
   - keycloak.yaml
   - n8n.yaml
   - tools.yaml
-  - monitoring.yaml
+#  - monitoring.yaml
   - redis.yaml
   - forgejo.yaml
