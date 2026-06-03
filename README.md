@@ -16,6 +16,7 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 - IT Tools for various IT utilities
 - Prometheus/Grafana for monitoring and alerting
 - Redis for caching
+- MinIO for S3-compatible object storage
 - Forgejo for code hosting
 - FinAdmin for personal finance management
 

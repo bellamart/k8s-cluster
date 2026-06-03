@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: chrobacik-cloud-cert
+  namespace: minio
+spec:
+  secretName: chrobacik-cloud-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - minio.chrobacik.cloud
+    - minio-console.chrobacik.cloud

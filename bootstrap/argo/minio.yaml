@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: minio
+  sources:
+    - repoURL: git@github.com:bellamart/k8s-cluster.git
+      targetRevision: main
+      path: apps/minio
+    - repoURL: https://charts.min.io/
+      chart: minio
+      targetRevision: 5.4.0
+      helm:
+        values: |
+          mode: standalone
+          replicas: 1
+          existingSecret: minio-credentials
+          resources:
+            requests:
+              memory: 512Mi
+          persistence:
+            enabled: true
+            storageClass: longhorn
+            accessMode: ReadWriteMany
+            size: 50Gi
+          ingress:
+            enabled: true
+            ingressClassName: traefik
+            hosts:
+              - minio.chrobacik.cloud
+            tls:
+              - secretName: chrobacik-cloud-tls
+                hosts:
+                  - minio.chrobacik.cloud
+          consoleIngress:
+            enabled: true
+            ingressClassName: traefik
+            hosts:
+              - minio-console.chrobacik.cloud
+            tls:
+              - secretName: chrobacik-cloud-tls
+                hosts:
+                  - minio-console.chrobacik.cloud
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m0s
+      limit: 2

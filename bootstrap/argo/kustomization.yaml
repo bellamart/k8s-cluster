@@ -8,6 +8,7 @@ resources:
   - fin-admin.yaml
   - keycloak.yaml
   - n8n.yaml
+  - minio.yaml
   - tools.yaml
 #  - monitoring.yaml
   - redis.yaml
