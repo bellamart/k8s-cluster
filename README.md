@@ -71,9 +71,8 @@ Create a configuration file named `application.yaml` with the necessary settings
 
 ```bash
 kubectl create secret generic forgejo-admin-secret \
-  --from-literal=username=<USERNAME> \
-  --from-literal=password=<PASSWORD> \
-  -n forgejo
+  --from-file=application.yaml=application.yaml \
+  -n fin-admin
 ```
 
 ## Forgejo
@@ -82,8 +81,9 @@ Create a secret to configure the admin user:
 
 ```bash
 kubectl create secret generic forgejo-admin-secret \
-  --from-file=application.yaml=application.yaml \
-  -n fin-admin
+  --from-literal=username=<USERNAME> \
+  --from-literal=password=<PASSWORD> \
+  -n forgejo
 ```
 
 ## Useful commands
