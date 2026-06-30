@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  chrobacik.cloud.override: |
+    forward chrobacik.cloud 192.168.1.250
