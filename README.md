@@ -19,6 +19,7 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 - MinIO for S3-compatible object storage
 - Forgejo for code hosting
 - FinAdmin for personal finance management
+- GPXViewer for personal trips tracking
 
 ## K3S installation
 
@@ -73,6 +74,26 @@ Create a configuration file named `application.yaml` with the necessary settings
 kubectl create secret generic forgejo-admin-secret \
   --from-file=application.yaml=application.yaml \
   -n fin-admin
+```
+
+## GPX Viewer
+
+Create a Kubernetes pull secret:
+
+```bash
+kubectl create secret docker-registry forgejo-registry-secret \
+  --docker-server=forgejo.chrobacik.cloud \
+  --docker-username=<your-github-username> \
+  --docker-password=<your-github-personal-access-token> \
+  --namespace=gpxviewer
+```
+
+Create a secret for the Mapy.com API key:
+
+```bash
+kubectl create secret generic mapy-credentials \
+  --from-literal=MAPY_COM_API_KEY=<your-api-key> \
+  --namespace=gpxviewer
 ```
 
 ## Forgejo

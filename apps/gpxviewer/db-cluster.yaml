@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-cluster-secret
+  namespace: gpxviewer
+stringData:
+  username: gpxviewer
+  password: my-strong-password
+  postgres-password: my-strong-password
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: gpxviewer-db-cluster
+  namespace: gpxviewer
+spec:
+  instances: 2
+  bootstrap:
+    initdb:
+      database: gpxviewer
+      owner: gpxviewer
+      secret:
+        name: db-cluster-secret
+  storage:
+    size: 1Gi
+    storageClass: longhorn

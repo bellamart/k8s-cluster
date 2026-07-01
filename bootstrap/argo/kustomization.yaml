@@ -14,3 +14,4 @@ resources:
 #  - monitoring.yaml
   - redis.yaml
   - forgejo.yaml
+  - gpxviewer.yaml
