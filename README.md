@@ -16,7 +16,8 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 - IT Tools for various IT utilities
 - Prometheus/Grafana for monitoring and alerting
 - Redis for caching
-- MinIO for S3-compatible object storage
+- MinIO for S3-compatible object storage (obsolete)
+- Garage for S3-compatible object storage
 - Forgejo for code hosting
 - FinAdmin for personal finance management
 - GPXViewer for personal trips tracking
@@ -47,6 +48,39 @@ Add the following as a regex deny in the domains section:
 
 ```
 ^.*\.domain\.com$;querytype=HTTPS
+```
+
+## Useful commands for Garage S3 storage
+
+Get Garage status
+
+```bash
+kubectl exec -it garage-0 -n garage -- /garage status
+```
+
+Layout operations 
+
+```bash
+kubect exec -it garage-0 -n garage -- /garage layout assign -z $ZONE -c $NODE_CAPACITY $NODE
+kubect exec -it garage-0 -n garage -- /garage layout apply --version $VERSION
+```
+
+Bucket creation
+
+```bash
+kubect exec -it garage-0 -n garage -- /garage bucket create $BUCKET_NAME
+```
+
+Access key creation
+
+```bash
+kubect exec -it garage-0 -n garage -- /garage key create $KEY_NAME
+```
+
+Allow a key to access a bucket
+
+```bash
+kubect exec -it garage-0 -n garage -- /garage bucket allow --read --write $BUCKET_NAME --key $KEY_NAME
 ```
 
 ## Fin-Admin App

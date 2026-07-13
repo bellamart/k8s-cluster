@@ -1,0 +1,60 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: garage
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: garage
+  sources:
+    - repoURL: git@github.com:bellamart/k8s-cluster.git
+      targetRevision: main
+      path: apps/garage
+    - repoURL: https://git.deuxfleurs.fr/Deuxfleurs/garage.git
+      targetRevision: main-v2
+      path: script/helm/garage
+      helm:
+        values: |
+          garage:
+            replicationFactor: 1
+
+          deployment:
+            replicaCount: 1
+
+          persistence:
+            meta:
+              storageClass: "longhorn"
+              size: 1Gi
+            data:
+              storageClass: "longhorn"
+              size: 50Gi
+
+          ingress:
+            s3:
+              api:
+                enabled: true
+                className: "traefik"
+                hosts:
+                  - host: garage.chrobacik.cloud
+                    paths:
+                      - path: /
+                        pathType: Prefix
+                tls:
+                  - secretName: chrobacik-cloud-tls
+                    hosts:
+                      - garage.chrobacik.cloud
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m0s
+      limit: 2
