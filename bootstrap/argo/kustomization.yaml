@@ -16,3 +16,4 @@ resources:
   - forgejo.yaml
   - gpxviewer.yaml
   - garage.yaml
+  - renovate.yaml

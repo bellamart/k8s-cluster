@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: renovate
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: renovate
+  sources:
+    - repoURL: oci://ghcr.io/renovatebot/charts/renovate
+      chart: renovate
+      targetRevision: 46.244.0
+      helm:
+        values: |
+          cronjob:
+            schedule: '0 6 * * 1'
+
+          existingSecret: renovate-env
+          renovate:
+            config: |
+              {
+                "platform": "forgejo",
+                "endpoint": "https://forgejo.chrobacik.cloud/api/v1",
+                "autodiscover": true,
+                "dryRun": false
+              }
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m0s
+      limit: 2

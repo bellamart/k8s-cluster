@@ -21,6 +21,7 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 - Forgejo for code hosting
 - FinAdmin for personal finance management
 - GPXViewer for personal trips tracking
+- Renovate update tool
 
 ## K3S installation
 
@@ -125,7 +126,7 @@ kubectl create secret docker-registry forgejo-registry-secret \
 Create a secret for the Mapy.com API key:
 
 ```bash
-kubectl create secret generic mapy-credentials \
+kubectl create secret generic mapy-secret \
   --from-literal=MAPY_COM_API_KEY=<your-api-key> \
   --namespace=gpxviewer
 ```
@@ -139,6 +140,24 @@ kubectl create secret generic forgejo-admin-secret \
   --from-literal=username=<USERNAME> \
   --from-literal=password=<PASSWORD> \
   -n forgejo
+```
+
+## Renovate
+
+Create a Forgejo bot user with a full name and email, then create a Personal Access Token with:
+
+- `repo` — Read and Write
+- `user` — Read
+- `issue` — Read and Write
+- `organization` — Read
+
+Create the Kubernetes secret (create the `renovate` namespace first if needed):
+
+```bash
+kubectl create namespace renovate
+kubectl create secret generic renovate-env \
+  --from-literal=RENOVATE_TOKEN=<your-forgejo-pat> \
+  -n renovate
 ```
 
 ## Useful commands
