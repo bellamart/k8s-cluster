@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "forgejo-runner.fullname" . }}
+  labels:
+    {{- include "forgejo-runner.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    log:
+      level: {{ .Values.runner.logLevel | default "info" | quote }}
+    runner:
+      capacity: {{ .Values.runner.capacity | default 1 }}
+      insecure: {{ .Values.runner.insecure | default false }}
+      labels:
+        {{- range .Values.runner.labels }}
+        - {{ . | quote }}
+        {{- end }}
+    host:
+      workdir_parent: {{ printf "%s/workspace" .Values.runner.workdir | quote }}
+    server:
+      connections:
+        forgejo:
+          url: {{ printf "%s/" (.Values.forgejo.url | trimSuffix "/") | quote }}
+          uuid: __RUNNER_UUID__
+          token: __RUNNER_TOKEN__
+  start.sh: |
+    #!/bin/sh
+    set -eu
+
+    DATA_DIR="${DATA_DIR:-/data}"
+    CONFIG_TEMPLATE="${CONFIG_TEMPLATE:-/config/config.yaml}"
+    CONFIG_FILE="${DATA_DIR}/config.yaml"
+
+    mkdir -p "${DATA_DIR}/workspace"
+
+    sed -e "s|__RUNNER_UUID__|${RUNNER_UUID}|g" -e "s|__RUNNER_TOKEN__|${RUNNER_TOKEN}|g" \
+      "$CONFIG_TEMPLATE" > "$CONFIG_FILE"
+    chmod 600 "$CONFIG_FILE"
+
+    echo "Starting runner daemon (${RUNNER_NAME})"
+    cd "$DATA_DIR"
+    exec forgejo-runner daemon --config "$CONFIG_FILE"

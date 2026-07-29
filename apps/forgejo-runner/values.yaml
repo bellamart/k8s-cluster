@@ -1,0 +1,46 @@
+replicaCount: 1
+
+image:
+  repository: data.forgejo.org/forgejo/runner
+  tag: "13"
+  pullPolicy: IfNotPresent
+
+forgejo:
+  url: ""
+  # Secret created after registering the runner in Forgejo (UI or API).
+  # Must contain the runner uuid and token keys below.
+  credentialsSecretName: ""
+  credentialsUuidKey: uuid
+  credentialsTokenKey: token
+
+runner:
+  name: k8s-runner
+  labels:
+    - self-hosted:host
+    - kubernetes:host
+  workdir: /data
+  logLevel: info
+  capacity: 1
+  insecure: false
+
+resources: {}
+podSecurityContext: {}
+securityContext: {}
+
+serviceAccount:
+  create: true
+  name: ""
+
+rbac:
+  create: true
+
+persistence:
+  enabled: true
+  size: 20Gi
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

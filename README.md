@@ -142,6 +142,15 @@ kubectl create secret generic forgejo-admin-secret \
   -n forgejo
 ```
 
+Create a secret to configure the forgejo runner:
+
+```bash
+kubectl -n forgejo create secret generic forgejo-runner-secret \
+  --from-literal=uuid='<uuid-from-forgejo>' \
+  --from-literal=token='<token-from-forgejo>' \
+  --dry-run=client -o yaml | kubectl apply -f -
+```
+
 ## Renovate
 
 Create a Forgejo bot user with a full name and email, then create a Personal Access Token with:

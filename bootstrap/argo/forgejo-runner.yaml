@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: forgejo-runner
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:bellamart/k8s-cluster.git
+    targetRevision: feature/forgejo-runner
+    path: main
+    helm:
+      values: |
+        forgejo:
+          url: https://forgejo.chrobacik.cloud
+          credentialsSecretName: forgejo-runner-secret
+          credentialsUuidKey: uuid
+          credentialsTokenKey: token
+        runner:
+          capacity: 2
+        persistence:
+          enabled: true
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteMany
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: forgejo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
