@@ -38,16 +38,12 @@ spec:
                 value: prod
               - name: SPRING_DATASOURCE_URL
                 value: jdbc:postgresql://gpxviewer-db-cluster-rw.gpxviewer.svc.cluster.local:5432/gpxviewer
-              - name: S3_ENDPOINT_URL
-                value: https://minio.chrobacik.cloud
-              - name: S3_REGION_NAME
-                value: eu-central-1
-              - name: S3_ACTIVITIES_BUCKET_NAME
-                value: activities
               - name: STRAVA_REDIRECT_URI
                 value: https://gpxviewer.chrobacik.cloud/api/v1/strava/callback
               - name: KEYCLOAK_HOST
                 value: keycloak.chrobacik.cloud
+              - name: S3_ACTIVITIES_BUCKET_NAME
+                value: activities
               - name: S3_ENDPOINT_URL
                 value: https://garage.chrobacik.cloud
               - name: S3_REGION_NAME
