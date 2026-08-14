@@ -14,7 +14,7 @@ spec:
       path: apps/forgejo
     - repoURL: oci://code.forgejo.org/forgejo-helm/forgejo
       chart: forgejo
-      targetRevision: 16.2.1
+      targetRevision: 17.1.4
       helm:
         values: |
           persistence:
