@@ -15,13 +15,34 @@ forgejo:
 
 runner:
   name: k8s-runner
+  # :host jobs run inside the runner image (no Java/Node).
+  # :docker jobs run in the listed OCI image via the DinD sidecar.
+  # Java: runs-on: docker (or ubuntu-latest) and actions/setup-java — JS
+  # actions such as checkout need Node in the job image.
   labels:
     - self-hosted:host
     - kubernetes:host
+    - docker:docker://docker.io/library/node:lts
+    - node:docker://docker.io/library/node:lts
+    - ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-22.04
   workdir: /data
   logLevel: info
   capacity: 1
   insecure: false
+
+dind:
+  enabled: true
+  image:
+    repository: docker.io/library/docker
+    tag: "29-dind"
+    pullPolicy: IfNotPresent
+  # Shared network namespace: bind localhost so dockerd is not pod-reachable.
+  listenAddress: tcp://127.0.0.1:2375
+  resources: {}
+  securityContext:
+    privileged: true
+    seccompProfile:
+      type: Unconfined
 
 resources: {}
 podSecurityContext:

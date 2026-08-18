@@ -23,6 +23,10 @@ data:
           url: {{ printf "%s/" (.Values.forgejo.url | trimSuffix "/") | quote }}
           uuid: __RUNNER_UUID__
           token: __RUNNER_TOKEN__
+    {{- if .Values.dind.enabled }}
+    container:
+      docker_host: "-"
+    {{- end }}
   start.sh: |
     #!/bin/sh
     set -eu
@@ -32,6 +36,23 @@ data:
     CONFIG_FILE="${DATA_DIR}/config.yaml"
 
     mkdir -p "${DATA_DIR}/workspace"
+
+    if [ -n "${DOCKER_HOST:-}" ]; then
+      echo "Waiting for Docker daemon at ${DOCKER_HOST}"
+      i=0
+      while [ "$i" -lt 60 ]; do
+        if wget -q -O /dev/null "http://${DOCKER_HOST#tcp://}/_ping" 2>/dev/null; then
+          echo "Docker daemon is ready"
+          break
+        fi
+        i=$((i + 1))
+        sleep 1
+      done
+      if [ "$i" -eq 60 ]; then
+        echo "Docker daemon did not become ready" >&2
+        exit 1
+      fi
+    fi
 
     sed -e "s|__RUNNER_UUID__|${RUNNER_UUID}|g" -e "s|__RUNNER_TOKEN__|${RUNNER_TOKEN}|g" \
       "$CONFIG_TEMPLATE" > "$CONFIG_FILE"

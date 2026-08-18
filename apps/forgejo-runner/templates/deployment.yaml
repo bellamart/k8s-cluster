@@ -17,6 +17,9 @@ spec:
         {{- include "forgejo-runner.selectorLabels" . | nindent 8 }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.dind.enabled }}
+        container.apparmor.security.beta.kubernetes.io/dind: unconfined
+        {{- end }}
     spec:
       serviceAccountName: {{ include "forgejo-runner.serviceAccountName" . }}
       {{- with .Values.podSecurityContext }}
@@ -44,6 +47,10 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.forgejo.credentialsSecretName }}
                   key: {{ .Values.forgejo.credentialsTokenKey }}
+            {{- if .Values.dind.enabled }}
+            - name: DOCKER_HOST
+              value: {{ .Values.dind.listenAddress | quote }}
+            {{- end }}
           volumeMounts:
             - name: config
               mountPath: /config
@@ -58,6 +65,29 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- if .Values.dind.enabled }}
+        - name: dind
+          image: "{{ .Values.dind.image.repository }}:{{ .Values.dind.image.tag }}"
+          imagePullPolicy: {{ .Values.dind.image.pullPolicy }}
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          args:
+            - dockerd
+            - --host={{ .Values.dind.listenAddress }}
+            - --tls=false
+          volumeMounts:
+            - name: docker-storage
+              mountPath: /var/lib/docker
+          {{- with .Values.dind.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.dind.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
       volumes:
         - name: config
           configMap:
@@ -70,6 +100,10 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+        {{- if .Values.dind.enabled }}
+        - name: docker-storage
+          emptyDir: {}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
