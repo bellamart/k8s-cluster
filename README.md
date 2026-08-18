@@ -1,18 +1,18 @@
-# K8S Cluster
+# K8s Cluster
 
-This is my second attempt to build a lightweight local Kubernetes cluster for personal, testing and learning purposes.
+This is my second attempt to build a lightweight local Kubernetes cluster for personal use, testing, and learning.
 
-## Currently deployed apps:
+## Currently deployed apps
 
-- Cert Manager for managing TLS certificates
+- cert-manager for managing TLS certificates
 - MetalLB for LoadBalancer support
 - CNPG for PostgreSQL databases
 - Longhorn for distributed block storage
-- PiHole for network-wide ad blocking
-- External DNS for managing DNS records
+- Pi-hole for network-wide ad blocking
+- ExternalDNS for managing DNS records
 - Nextcloud for personal cloud storage
 - Keycloak for identity and access management
-- N8N for workflow automation
+- n8n for workflow automation
 - IT Tools for various IT utilities
 - Prometheus/Grafana for monitoring and alerting
 - Redis for caching
@@ -20,28 +20,28 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 - Garage for S3-compatible object storage
 - Forgejo for code hosting
 - FinAdmin for personal finance management
-- GPXViewer for personal trips tracking
-- Renovate update tool
+- GPX Viewer for tracking personal trips
+- Renovate for automated dependency updates
 
-## K3S installation
+## K3s installation
 
 First node:
 
 ```bash
-curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode "0644" --token pdZKhWJaqtqB --cluster-init --disable servicelb --disable local-storage
+curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode "0644" --token "$K3S_TOKEN" --cluster-init --disable servicelb --disable local-storage
 ```
 
 Other nodes:
 
 ```bash
-curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode "0644" --token pdZKhWJaqtqB --cluster-init --disable servicelb --disable local-storage --server https://$FIRST_NODE_NAME:6443
+curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode "0644" --token "$K3S_TOKEN" --cluster-init --disable servicelb --disable local-storage --server "https://$FIRST_NODE_NAME:6443"
 ```
 
-## ArgoCD
+## Argo CD
 
 Check the [official documentation](https://argo-cd.readthedocs.io/en/stable/getting_started/) for more details.
 
-This repo uses an "app-of-apps" bootstrap. Apply `bootstrap/argo-root.yaml` once to let ArgoCD manage the rest of the resources in this repository.
+This repository uses an "app-of-apps" bootstrap. Apply `bootstrap/argo-root.yaml` once to let Argo CD manage the remaining resources in the repository.
 
 ## Pi-hole adjustments
 
@@ -53,46 +53,47 @@ Add the following as a regex deny in the domains section:
 
 ## Useful commands for Garage S3 storage
 
-Get Garage status
+Get the Garage status:
 
 ```bash
 kubectl exec -it garage-0 -n garage -- /garage status
 ```
 
-Layout operations 
+Perform layout operations:
 
 ```bash
-kubect exec -it garage-0 -n garage -- /garage layout assign -z $ZONE -c $NODE_CAPACITY $NODE
-kubect exec -it garage-0 -n garage -- /garage layout apply --version $VERSION
+kubectl exec -it garage-0 -n garage -- /garage layout assign -z "$ZONE" -c "$NODE_CAPACITY" "$NODE"
+kubectl exec -it garage-0 -n garage -- /garage layout apply --version "$VERSION"
 ```
 
-Bucket creation
+Create a bucket:
 
 ```bash
-kubect exec -it garage-0 -n garage -- /garage bucket create $BUCKET_NAME
+kubectl exec -it garage-0 -n garage -- /garage bucket create "$BUCKET_NAME"
 ```
 
-Access key creation
+Create an access key:
 
 ```bash
-kubect exec -it garage-0 -n garage -- /garage key create $KEY_NAME
+kubectl exec -it garage-0 -n garage -- /garage key create "$KEY_NAME"
 ```
 
-Allow a key to access a bucket
+Allow a key to access a bucket:
 
 ```bash
-kubect exec -it garage-0 -n garage -- /garage bucket allow --read --write $BUCKET_NAME --key $KEY_NAME
+kubectl exec -it garage-0 -n garage -- /garage bucket allow --read --write "$BUCKET_NAME" --key "$KEY_NAME"
 ```
 
 ## Fin-Admin App
 
-FinAdmin is designed to help me generate VAT documents for the Czech Financial Administration. To deploy the FinAdmin, follow these steps:
+FinAdmin helps me generate VAT documents for the Czech Financial Administration. To deploy FinAdmin, follow these steps:
 
 Create a namespace for FinAdmin:
 
 ```bash
 kubectl create namespace fin-admin
 ```
+
 Create a GitHub Personal Access Token (PAT) with `read:packages` scope and add it as a Kubernetes secret in the `fin-admin` namespace:
 
 ```bash
@@ -131,6 +132,15 @@ kubectl create secret generic mapy-secret \
   --namespace=gpxviewer
 ```
 
+Create a secret for the S3 access key:
+
+```bash
+kubectl create secret generic s3-credentials \
+  --from-literal=S3_ACCESS_KEY=<your-access-key> \
+  --from-literal=S3_SECRET_KEY=<your-secret-key> \
+  --namespace=gpxviewer
+```
+
 ## Forgejo
 
 Create a secret to configure the admin user:
@@ -142,7 +152,7 @@ kubectl create secret generic forgejo-admin-secret \
   -n forgejo
 ```
 
-Create a secret to configure the forgejo runner:
+Create a secret to configure the Forgejo runner:
 
 ```bash
 kubectl -n forgejo create secret generic forgejo-runner-secret \
@@ -171,13 +181,13 @@ kubectl create secret generic renovate-env \
 
 ## Useful commands
 
-To enable port forwarding for accessing the ArgoCD console:
+To access the Argo CD console, enable port forwarding:
 
 ```bash
 kubectl port-forward svc/argocd-server -n argocd 8080:80
 ```
 
-To retrieve the initial ArgoCD admin password:
+To retrieve the initial Argo CD admin password:
 
 ```bash
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
