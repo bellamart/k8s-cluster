@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: git@github.com:bellamart/k8s-cluster.git
     targetRevision: main
-    path: main
+    path: apps/forgejo-runner
     helm:
       values: |
         forgejo:
