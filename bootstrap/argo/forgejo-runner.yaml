@@ -22,7 +22,7 @@ spec:
           enabled: true
           storageClassName: longhorn
           accessModes:
-            - ReadWriteMany
+            - ReadWriteOnce
 
   destination:
     server: https://kubernetes.default.svc
