@@ -22,6 +22,7 @@ This is my second attempt to build a lightweight local Kubernetes cluster for pe
 - FinAdmin for personal finance management
 - GPX Viewer for tracking personal trips
 - Renovate for automated dependency updates
+- Cloudflare for tunneling traffic
 
 ## K3s installation
 
@@ -191,4 +192,16 @@ To retrieve the initial Argo CD admin password:
 
 ```bash
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+
+Cloudflare tunnel:
+
+Create 
+
+```bash
+kubectl create namespace cloudflare
+
+kubectl create secret generic cloudflared-credentials \
+  --from-literal=RENOVATE_TOKEN=<your-forgejo-pat> \
+  -n renovate
 ```

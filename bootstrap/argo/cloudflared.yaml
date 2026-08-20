@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudflared
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cloudflared
+  source:
+    repoURL: https://community-charts.github.io/helm-charts
+    chart: cloudflared
+    targetRevision: 2.2.16
+    helm:
+      values: |
+        tunnel:
+          id: "<TUNNEL_ID>"
+          secretRef: cloudflared-credentials        
+
+        # Optional: custom config if the chart supports it
+        # config:
+        #   ingress:
+        #     - hostname: home.yourdomain.com
+        #       service: http://traefik-web.traefik-system.svc.cluster.local:8000
+        #     - service: http_status:404
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m0s
+      limit: 2
