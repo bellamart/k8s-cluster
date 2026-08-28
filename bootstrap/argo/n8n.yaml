@@ -14,7 +14,7 @@ spec:
       path: apps/n8n
     - repoURL: https://community-charts.github.io/helm-charts
       chart: n8n
-      targetRevision: 1.16.28
+      targetRevision: 1.24.33
       helm:
         values: |
           existingEncryptionKeySecret: n8n-encryption-key-secret
