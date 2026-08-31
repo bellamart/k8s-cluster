@@ -4,7 +4,7 @@ resources:
   - metallb.yaml
   - cnpg.yaml
   - longhorn.yaml
-#  - pihole.yaml
+  - pihole.yaml
   - nextcloud.yaml
   - fin-admin.yaml
   - keycloak.yaml
