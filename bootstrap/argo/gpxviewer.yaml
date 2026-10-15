@@ -13,7 +13,7 @@ spec:
       targetRevision: main
       path: apps/gpxviewer
     - repoURL: https://forgejo.chrobacik.cloud/martin/gpx-viewer
-      targetRevision: v0.0.8
+      targetRevision: v0.0.9
       path: chart/gpxviewer
       helm:
         values: |
@@ -31,7 +31,7 @@ spec:
 
           backend:
             image:
-              tag: v0.0.8
+              tag: v0.0.9
 
             env:
               - name: SPRING_PROFILES_ACTIVE
@@ -82,7 +82,7 @@ spec:
                     name: keycloak-credentials
           frontend:
             image:
-                tag: v0.0.8
+                tag: v0.0.9
 
             # Leave empty when ingress routes /api to the backend on the same host
             apiBaseUrl: ""
