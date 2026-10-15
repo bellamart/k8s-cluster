@@ -6,7 +6,6 @@ metadata:
 stringData:
   username: n8n
   password: my-strong-password
-  postgres-password: my-strong-password
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
