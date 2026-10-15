@@ -48,6 +48,8 @@ spec:
                 value: https://garage.chrobacik.cloud
               - name: S3_REGION_NAME
                 value: garage
+              - name: S3_SYNC_S3BUCKET_CRON
+                value: "0 0 2 * * *"
               - name: S3_ACCESS_KEY
                 valueFrom:
                   secretKeyRef:
